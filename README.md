@@ -1,7 +1,7 @@
 
 # minimal-ubuntu-setup
 
-A minimalist Ubuntu setup script for users focusing on computer vision. 
+A minimalist Ubuntu setup. 
 
 Automates the installation of essential development tools, browsers, and system utilities. Includes optional configuration for a complete computer vision environment with PyTorch, TensorFlow, OpenCV, and other commonly used libraries.
 
