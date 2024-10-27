@@ -46,7 +46,7 @@ configure_git() {
 
 setup_vision_env() {
     print_header "Setting up Computer Vision Environment"
-    if ask_install "Computer Vision Environment (OpenCV, PyTorch, TensorFlow, etc.)"; then
+    if ask_install "Computer Vision Environment (OpenCV, PyTorch, matplotlib, open3d, etc.)"; then
         if [ -f ~/miniconda3/etc/profile.d/conda.sh ]; then
             source ~/miniconda3/etc/profile.d/conda.sh
             conda create -n vision python=3.8 -y
