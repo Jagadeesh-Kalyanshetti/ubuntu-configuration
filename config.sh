@@ -6,17 +6,17 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 print_header() {
-    echo -e "\n${BLUE}=== $1 ===${NC}\n"
+    printf "\n${BLUE}=== $1 ===${NC}\n\n"
 }
 
 ask_install() {
     while true; do
-        echo -e "${GREEN}Do you want to install $1? (y/n)${NC}"
+        printf "${GREEN}Do you want to install $1? (y/n)${NC}\n"
         read -r ans
         case $ans in
             [Yy]* ) return 0;;
             [Nn]* ) return 1;;
-            * ) echo "Please answer y or n.";;
+            * ) printf "Please answer y or n.\n";;
         esac
     done
 }
@@ -34,38 +34,44 @@ update_system() {
 
 configure_git() {
     print_header "Configuring Git"
-    echo "Enter your GitHub username:"
+    printf "Enter your GitHub username:\n"
     read -r username
     git config --global user.name "$username"
     
-    echo "Enter your GitHub email:"
+    printf "Enter your GitHub email:\n"
     read -r email
     git config --global user.email "$email"
-    echo "Git configured successfully!"
+    printf "Git configured successfully!\n"
 }
 
 setup_vision_env() {
     print_header "Setting up Computer Vision Environment"
     if ask_install "Computer Vision Environment (OpenCV, PyTorch, TensorFlow, etc.)"; then
-        source ~/miniconda3/etc/profile.d/conda.sh
-        conda create -n vision python=3.8 -y
-        conda activate vision
-        conda install -y -c conda-forge -c pytorch \
-            opencv \
-            pillow \
-            scikit-image \
-            matplotlib \
-            imageio \
-            open3d \
-            pyvista \
-            vtk \
-            pytorch \
-            torchvision \
-            torchaudio \
-            pandas
-        conda deactivate
-        echo -e "${GREEN}Vision environment created successfully!${NC}"
-        echo -e "${BLUE}To activate: conda activate vision${NC}"
+        if [ -f ~/miniconda3/etc/profile.d/conda.sh ]; then
+            source ~/miniconda3/etc/profile.d/conda.sh
+            conda create -n vision python=3.8 -y
+            conda activate vision
+            conda install -y -c conda-forge -c pytorch \
+                opencv \
+                pillow \
+                scikit-image \
+                matplotlib \
+                imageio \
+                open3d \
+                pyvista \
+                vtk \
+                tensorflow \
+                keras \
+                pytorch \
+                torchvision \
+                torchaudio \
+                pandas
+            conda deactivate
+            printf "${GREEN}Vision environment created successfully!${NC}\n"
+            printf "${BLUE}To activate: conda activate vision${NC}\n"
+        else
+            printf "${RED}Conda initialization script not found. Restart your session or source it manually.${NC}\n"
+        fi
     fi
 }
 
@@ -82,11 +88,16 @@ install_development_tools() {
     fi
     
     if ask_install "Miniconda"; then
-        wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh --no-check-certificate
-        bash ./Miniconda3-py38_4.10.3-Linux-x86_64.sh
-        rm ./Miniconda3-py38_4.10.3-Linux-x86_64.sh
-        source ~/miniconda3/etc/profile.d/conda.sh
-        setup_vision_env
+        wget https://repo.anaconda.com/miniconda/Miniconda3-py310_23.9.0-0-Linux-x86_64.sh --no-check-certificate
+        bash ./Miniconda3-py310_23.9.0-0-Linux-x86_64.sh
+        rm ./Miniconda3-py310_23.9.0-0-Linux-x86_64.sh
+        export PATH=~/miniconda3/bin:$PATH
+        if [ -f ~/miniconda3/etc/profile.d/conda.sh ]; then
+            source ~/miniconda3/etc/profile.d/conda.sh
+            setup_vision_env
+        else
+            printf "${RED}Conda initialization script not found. Restart your session or source it manually.${NC}\n"
+        fi
     fi
 }
 
@@ -116,7 +127,7 @@ install_system_utilities() {
         tmux \
         net-tools \
         openssh-server \
-        gnome-tweak-tool \
+        gnome-tweaks \
         gnome-shell-extensions \
         chrome-gnome-shell
     
@@ -125,16 +136,15 @@ install_system_utilities() {
             bash ./fusuma-config.sh
             bash ./fusuma-config2.sh
         else
-            echo "Fusuma configuration scripts not found!"
+            printf "Fusuma configuration scripts not found!\n"
         fi
     fi
 }
 
 clear
-echo -e "${GREEN}Welcome to Ubuntu System Setup Script${NC}"
-echo -e "${RED}Note: This script will install and configure various applications on your Ubuntu system.${NC}"
-echo -e "${RED}Make sure you have a stable internet connection before proceeding.${NC}"
-echo ""
+printf "${GREEN}Welcome to Ubuntu System Setup Script${NC}\n"
+printf "${RED}Note: This script will install and configure various applications on your Ubuntu system.${NC}\n"
+printf "${RED}Make sure you have a stable internet connection before proceeding.${NC}\n\n"
 read -p "Press Enter to continue..."
 
 update_system
@@ -147,5 +157,5 @@ sudo apt autoremove -y
 sudo apt autoclean -y
 
 print_header "Setup Complete!"
-echo -e "${GREEN}Your system has been successfully configured!${NC}"
-echo -e "${BLUE}Please restart your system to ensure all changes take effect.${NC}"
+printf "${GREEN}Your system has been successfully configured!${NC}\n"
+printf "${BLUE}Please restart your system to ensure all changes take effect.${NC}\n"
